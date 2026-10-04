@@ -1,0 +1,13 @@
+.venv/
+node_modules/
+web/dist/
+__pycache__/
+.pytest_cache/
+.superpowers/
+.runtime/
+models/
+web/test-results/
+web/playwright-report/
+test-results/
+.ruff_cache/
+.DS_Store

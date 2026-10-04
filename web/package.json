@@ -1,0 +1,25 @@
+{
+  "name": "autoprompter",
+  "private": true,
+  "version": "0.1.0",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.0.0",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0",
+    "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.16",
+    "marked": "^18.0.14"
+  }
+}

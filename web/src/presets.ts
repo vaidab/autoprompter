@@ -1,7 +1,7 @@
 import type { Preset } from "./protocol";
 export const defaults: Preset[] = [
   ["compact", "Compact", 640, 360, 32],
-  ["standard", "Standard", 900, 600, 44],
+  ["standard", "Standard", 900, 600, 40],
   ["large", "Large", 1200, 800, 56],
 ].map(([id, name, width, height, fontSize]) => ({
   id: id as string,
@@ -9,7 +9,7 @@ export const defaults: Preset[] = [
   width: width as number,
   height: height as number,
   fontSize: fontSize as number,
-  lineSpacing: 1.5,
+  lineSpacing: id === "standard" ? 1 : 1.5,
   speed: 30,
 }));
 export function validatePreset(value: unknown): Preset | null {

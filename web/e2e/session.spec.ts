@@ -1,4 +1,35 @@
 import { test, expect } from "@playwright/test";
+test("replacing a script resets the existing prompter without a Reset click", async ({
+  page,
+  context,
+}) => {
+  await page.goto("http://127.0.0.1:8766/");
+  await expect(page.getByLabel("Your script")).toBeEnabled();
+  await page
+    .getByLabel("Your script")
+    .fill("Script vechi pentru citire.\n\n".repeat(30));
+  const p = await context.newPage();
+  await p.goto("http://127.0.0.1:8766/prompter");
+  await expect(p.locator("#script")).toContainText("Script vechi");
+  await p.locator("#reading").evaluate((el) => {
+    el.scrollTop = 800;
+  });
+  await expect
+    .poll(() => p.locator("#reading").evaluate((el) => el.scrollTop))
+    .toBeGreaterThan(500);
+  await page
+    .getByLabel("Your script")
+    .fill("Începutul scriptului nou trebuie să fie vizibil.\n\n".repeat(30));
+  await expect(p.locator("#script")).toContainText("Începutul scriptului nou");
+  await expect
+    .poll(() => p.locator("#reading").evaluate((el) => el.scrollTop))
+    .toBe(0);
+  await expect(p.locator(".read,.current")).toHaveCount(0);
+  await page.getByLabel("Mode").selectOption("fixed");
+  await page.locator("#start").click();
+  await expect(p.locator("#status")).toHaveText("Scrolling");
+  await expect(p.locator("#script")).not.toContainText("Script vechi");
+});
 test("real local session synchronizes two pages and fixed-speed pause/reset", async ({
   page,
   context,

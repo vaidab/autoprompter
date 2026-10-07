@@ -5,8 +5,8 @@ DEFAULT_PRESET = dict(
     name="Standard",
     width=900,
     height=600,
-    fontSize=44,
-    lineSpacing=1.5,
+    fontSize=40,
+    lineSpacing=1,
     speed=30,
 )
 

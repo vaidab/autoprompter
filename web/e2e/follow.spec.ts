@@ -72,9 +72,47 @@ async function fixture(page: any, content = script) {
       status = "paused";
       socket.send(JSON.stringify({ type: "state", state: state() }));
     },
+    state(overrides: Record<string, unknown>) {
+      socket.send(
+        JSON.stringify({ type: "state", state: { ...state(), ...overrides } }),
+      );
+    },
+    disconnect() {
+      socket.close();
+    },
     sent,
   };
 }
+test("microphone indicator stays visible with hidden controls and follows session state", async ({
+  page,
+}) => {
+  const f = await fixture(page);
+  const indicator = page.getByRole("img", { name: "Microphone active" });
+  await expect(indicator).toBeVisible();
+  await page.locator("#hide").click();
+  await expect(indicator).toBeVisible();
+  await expect(page.locator("#show")).toBeVisible();
+  await page.screenshot({
+    path: "../.runtime/screenshots/microphone-desktop.png",
+  });
+  await page.setViewportSize({ width: 390, height: 700 });
+  const iconBox = await indicator.boundingBox();
+  const controlsBox = await page.locator("#show").boundingBox();
+  expect(controlsBox!.x + controlsBox!.width).toBeLessThan(iconBox!.x);
+  await page.screenshot({
+    path: "../.runtime/screenshots/microphone-narrow.png",
+  });
+  f.pause();
+  await expect(indicator).toBeHidden();
+  f.state({ status: "scrolling", mode: "fixed" });
+  await expect(indicator).toBeHidden();
+  f.state({ status: "listening", prompter: "other" });
+  await expect(indicator).toBeHidden();
+  f.state({ status: "listening" });
+  await expect(indicator).toBeVisible();
+  f.disconnect();
+  await expect(indicator).toBeHidden();
+});
 test("recognition follows visible text and ignores offscreen speech", async ({
   page,
 }) => {

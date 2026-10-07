@@ -26,6 +26,7 @@ export function connectReading(
   let lastSpeechEndMs = -Infinity;
   const status = document.getElementById("status")!,
     toggle = document.getElementById("toggle")!;
+  const microphone = document.getElementById("microphone-active")!;
   const snapshot = () =>
     measureViewport(reading, client.state?.generation ?? 0, revision, anchor);
   function publish() {
@@ -107,11 +108,18 @@ export function connectReading(
     if (msg.type === "state") {
       const s = client.state!;
       active = s.prompter === client.id;
+      microphone.hidden = !(
+        active &&
+        s.owner &&
+        s.mode === "voice" &&
+        s.status === "listening"
+      );
       const next = JSON.stringify([s.script, s.preset]);
       if (next !== signature) {
         signature = next;
         motion.stop();
-        if (renderedText !== s.script) anchor = null;
+        const scriptChanged = renderedText !== s.script;
+        if (scriptChanged) anchor = null;
         renderedText = s.script;
         tokens = renderScript(script, s.script);
         markProgress(script, anchor);
@@ -119,6 +127,7 @@ export function connectReading(
         reading.style.height = `min(calc(100dvh - 64px), ${s.preset.height}px)`;
         script.style.fontSize = `${s.preset.fontSize}px`;
         script.style.lineHeight = String(s.preset.lineSpacing);
+        if (scriptChanged) reset();
       }
       if (generation !== s.generation) {
         motion.stop();
@@ -156,6 +165,7 @@ export function connectReading(
       apply(msg as unknown as TranscriptUpdate);
     else if (msg.type === "reset") reset();
     else if (msg.type === "disconnected" || msg.type === "stopped") {
+      microphone.hidden = true;
       active = false;
       motion.stop();
       status.textContent = msg.type === "stopped" ? "Stopped" : "Disconnected";

@@ -39,6 +39,12 @@ The first model download is approximately 2.5 GB, cached under `.runtime/models`
 
 ## Following behavior
 
+The built-in Standard preset uses a 40 px font and line spacing 1. Saved presets are personal browser data; code updates preserve them and do not overwrite them with built-in defaults.
+
+A red microphone icon in the prompter's upper-right corner indicates active voice following. It remains visible with controls hidden and disappears on Pause, fixed-speed mode, or service disconnection.
+
+Replacing the script in Setup updates the open prompter and returns it to the beginning automatically. Pause/Start with the same script preserves the reading position.
+
 The prompter renders Markdown headings, **bold**, *italics*, lists, and other basic text formatting. Paste Markdown directly in Setup; formatting markers and link destinations are excluded from spoken matching. Pasted HTML remains literal text; images show their alternative text without loading external media.
 
 The last recognized word has a translucent green background. Earlier words turn gray to show progress; repeating an earlier visible phrase moves this boundary backward. This marks the current reading position, so skipped words before it also appear gray. Reset clears the markers. Voice-follow scrolling eases toward each confirmed position and stops on Pause or manual navigation. The system's Reduce Motion preference uses immediate positioning.
